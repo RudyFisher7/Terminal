@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Terminal.gd" type="Script" id=1]
+
+[node name="Terminal" type="Control"]
+anchor_top = 0.5
+anchor_right = 0.25
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+path_to_terminal = NodePath("AspectRatioContainer/TextEdit")
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
+anchor_right = 0.625
+anchor_bottom = 1.0
+ratio = 0.625
+
+[node name="TextEdit" type="TextEdit" parent="AspectRatioContainer"]
+margin_right = 40.0
+margin_bottom = 64.0
+rect_min_size = Vector2( 0, 16 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+syntax_highlighting = true
+show_line_numbers = true
+bookmark_gutter = true
+highlight_all_occurrences = true
+smooth_scrolling = true
+wrap_enabled = true
+caret_blink = true
+
+[connection signal="cursor_changed" from="AspectRatioContainer/TextEdit" to="." method="_on_TextEdit_cursor_changed"]
+[connection signal="text_changed" from="AspectRatioContainer/TextEdit" to="." method="_on_TextEdit_text_changed"]
