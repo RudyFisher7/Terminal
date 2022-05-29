@@ -15,6 +15,8 @@ export var path_to_terminal : NodePath
 
 const prompt : String = ">>"
 
+
+# TODO: use Commands.gd instead
 var cmds : Array = [
 	"ls", # List all game objects, maybe arg "-p" could be list all
 		  # people
@@ -25,7 +27,7 @@ var cmds : Array = [
 	"hi",
 	"quit",
 	"mv",
-	"ls",
+	"sky",
 	"ls",
 	"ls",
 ]
@@ -47,12 +49,13 @@ func _ready() -> void:
 func _connect_cmd_signal_to_world_manager() -> void:
 	var sig : String = "cmd_executed"
 	var method : String = "_on_Terminal_cmd_executed"
-	WorldManager.connect(sig, self, method)
+	var err = connect(sig, WorldManager, method)
 
 
 func _add_cmds_to_keywords() -> void:
 	terminal.add_keyword_color("hi", Color.royalblue);
 	terminal.add_keyword_color("quit", Color.firebrick);
+	terminal.add_keyword_color("sky", Color.skyblue);
 
 
 func _parse_cmd_and_args() -> void:
