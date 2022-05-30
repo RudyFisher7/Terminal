@@ -20,7 +20,7 @@ func _ready():
 #	pass
 
 
-func _on_Terminal_cmd_executed(cmd) -> void:
-	match cmd[0]:
+func _on_Terminal_cmd_executed(parsed_cmd) -> void:
+	match parsed_cmd[0]:
 		"sky":
-			emit_signal("sky_changed", cmd)
+			emit_signal("sky_changed", parsed_cmd)

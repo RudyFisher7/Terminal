@@ -16,22 +16,7 @@ export var path_to_terminal : NodePath
 const prompt : String = ">>"
 
 
-# TODO: use Commands.gd instead
-var cmds : Array = [
-	"ls", # List all game objects, maybe arg "-p" could be list all
-		  # people
-	"ps", # Lists all the running machines in the world
-	"pkill", # Kills all running machines in the world 
-			 # (options: <name of machine>)
-	"cd",
-	"hi",
-	"quit",
-	"mv",
-	"sky",
-	"ls",
-	"ls",
-]
-
+var cmd_lib : CommandLibrary = CommandLibrary.new()
 var cmd : String = ""
 var parsed_cmd : PoolStringArray = []
 var cmd_delimiter : String = " "
@@ -53,9 +38,8 @@ func _connect_cmd_signal_to_world_manager() -> void:
 
 
 func _add_cmds_to_keywords() -> void:
-	terminal.add_keyword_color("hi", Color.royalblue);
-	terminal.add_keyword_color("quit", Color.firebrick);
-	terminal.add_keyword_color("sky", Color.skyblue);
+	for cmd in cmd_lib.get_cmds():
+		terminal.add_keyword_color(cmd, Color.royalblue);
 
 
 func _parse_cmd_and_args() -> void:
@@ -67,7 +51,8 @@ func _parse_cmd_and_args() -> void:
 
 func _execute_cmd() -> void:
 	_parse_cmd_and_args()
-	if terminal.has_keyword_color(parsed_cmd[0]):
+	var err_msg : int = cmd_lib.validate(parsed_cmd)
+	if err_msg == cmd_lib.CmdErrors.CMD_VALID:
 		print(parsed_cmd[0] + " is a cmd!")
 		match parsed_cmd[0]:
 			"hi":
@@ -76,12 +61,15 @@ func _execute_cmd() -> void:
 				terminal.text += "Bye! ^_^ Bye!\n"
 				_set_cursor_to_next_prompt()
 				terminal.readonly = true
-				yield(get_tree().create_timer(2.0), "timeout")
+				if parsed_cmd.size() == 2:
+					var duration : float = float(parsed_cmd[1])
+					var timer : = get_tree().create_timer(duration)
+					yield(timer, "timeout")
 				get_tree().quit(0)
 			_:
 				emit_signal("cmd_executed", parsed_cmd)
 	else:
-		print(parsed_cmd[0] + " is not a cmd!")
+		terminal.text += cmd_lib.CmdErrors.keys()[err_msg] + "\n"
 	
 	terminal.text += prompt
 	cmd = ""
