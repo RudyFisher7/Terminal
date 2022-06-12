@@ -7,7 +7,7 @@ extends Node
 # signals which other nodes must subscribe to.
 #####################################################################
 
-signal sky_changed(cmd)
+signal sun_changed(cmd)
 
 
 # Called when the node enters the scene tree for the first time.
@@ -22,5 +22,5 @@ func _ready():
 
 func _on_Terminal_cmd_executed(parsed_cmd) -> void:
 	match parsed_cmd[0]:
-		"sky":
-			emit_signal("sky_changed", parsed_cmd)
+		"sun":
+			emit_signal("sun_changed", parsed_cmd)
