@@ -29,6 +29,7 @@ var _cmds : Dictionary = {
 	"quit":funcref(self, "_validate_quit"),
 	"mv":funcref(self, "_validate_ps"),
 	"sky":funcref(self, "_validate_sky"),
+	"sun":funcref(self, "_validate_sun"),
 }
 
 var _sky_cmds : Dictionary = {
@@ -64,6 +65,15 @@ func _validate_hi(parsed_cmd : PoolStringArray) -> int:
 	if !parsed_cmd.size() == 1:
 		result = CmdErrors.WRONG_NUMBER_OF_ARGS
 	return result
+
+
+# TODO: clean up, debug, finish implementing
+func _validate_sun(parsed_cmd : PoolStringArray) -> int:
+	var result : int = 0
+	if !parsed_cmd.size() == 3:
+		result = CmdErrors.WRONG_NUMBER_OF_ARGS
+	return result
+
 
 # TODO: clean up, debug, finish implementing
 func _validate_sky(parsed_cmd : PoolStringArray) -> int:
