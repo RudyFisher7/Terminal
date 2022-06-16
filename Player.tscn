@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Player.gd" type="Script" id=1]
+
+[sub_resource type="CapsuleShape" id=1]
+radius = 0.297024
+height = 0.5
+
+[node name="Player" type="KinematicBody"]
+script = ExtResource( 1 )
+path_to_eyes = NodePath("Eyes")
+path_to_y_pivot = NodePath("Eyes/YPivot")
+path_to_x_pivot = NodePath("Eyes/YPivot/XPivot")
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.546467, 0 )
+shape = SubResource( 1 )
+
+[node name="Eyes" type="Position3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.796945, 0 )
+
+[node name="YPivot" type="Position3D" parent="Eyes"]
+
+[node name="XPivot" type="Position3D" parent="Eyes/YPivot"]
+
+[node name="Camera" type="Camera" parent="Eyes/YPivot/XPivot"]
+current = true
+far = 8192.0

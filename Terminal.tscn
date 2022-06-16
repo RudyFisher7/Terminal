@@ -4,18 +4,18 @@
 
 [node name="Terminal" type="Control"]
 anchor_top = 0.5
-anchor_right = 0.25
+anchor_right = 0.5
 anchor_bottom = 1.0
 script = ExtResource( 1 )
 path_to_terminal = NodePath("AspectRatioContainer/TextEdit")
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
-anchor_right = 0.625
+anchor_right = 1.0
 anchor_bottom = 1.0
-ratio = 0.625
+ratio = 2.0
 
 [node name="TextEdit" type="TextEdit" parent="AspectRatioContainer"]
-margin_right = 40.0
+margin_right = 128.0
 margin_bottom = 64.0
 rect_min_size = Vector2( 0, 16 )
 size_flags_horizontal = 3

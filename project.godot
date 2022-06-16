@@ -36,10 +36,14 @@ WorldManager="*res://WorldManager.tscn"
 
 [display]
 
-window/size/width=256
-window/size/height=128
-window/size/test_width=1080
-window/size/test_height=800
+window/size/width=2208
+window/size/height=1242
+window/size/test_width=1104
+window/size/test_height=621
+
+[input_devices]
+
+pointing/emulate_touch_from_mouse=true
 
 [physics]
 
