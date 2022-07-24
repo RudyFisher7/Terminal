@@ -16,7 +16,7 @@ export var path_to_terminal : NodePath
 const prompt : String = ">>"
 
 
-var cmd_lib : CommandLibrary = CommandLibrary.new()
+var cmd_lib : = CommandLibrary
 var cmd : String = ""
 var parsed_cmd : PoolStringArray = []
 var cmd_delimiter : String = " "

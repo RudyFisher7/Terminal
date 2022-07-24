@@ -1,4 +1,4 @@
-extends Reference
+extends Node
 
 # TODO
 #####################################################################
@@ -6,7 +6,17 @@ extends Reference
 # validation.
 #####################################################################
 
-class_name CommandLibrary
+enum {
+	LS,
+	PS,
+	PKILL,
+	CD,
+	HI,
+	QUIT,
+	MV,
+	SKY,
+	SUN,
+}
 
 enum CmdErrors {
 	CMD_VALID,
@@ -16,39 +26,75 @@ enum CmdErrors {
 	INVALID_ARG,
 	ARGS_OUT_OF_RANGE,
 	WRONG_NUMBER_OF_ARGS,
+	NO_CMD_ENTERED,
+}
+
+var cmd_keys : Dictionary = {
+	"ls":LS,
+	"ps":PS,
+	"pkill":PKILL,
+	"cd":CD,
+	"hi":HI,
+	"quit":QUIT,
+	"mv":MV,
+	"sky":SKY,
+	"sun":SUN,
 }
 
 var _cmds : Dictionary = {
-	"ls":funcref(self, "_validate_ls"), # List all game objects, maybe arg "-p" could be list all
+	LS:funcref(self, "_validate_ls"), # List all game objects, maybe arg "-p" could be list all
 		  # people
-	"ps":funcref(self, "_validate_ps"), # Lists all the running machines in the world
-	"pkill":funcref(self, "_validate_ps"), # Kills all running machines in the world 
+	PS:funcref(self, "_validate_ps"), # Lists all the running machines in the world
+	PKILL:funcref(self, "_validate_ps"), # Kills all running machines in the world 
 			 # (options: <name of machine>)
-	"cd":funcref(self, "_validate_ps"),
-	"hi":funcref(self, "_validate_hi"),
-	"quit":funcref(self, "_validate_quit"),
-	"mv":funcref(self, "_validate_ps"),
-	"sky":funcref(self, "_validate_sky"),
-	"sun":funcref(self, "_validate_sun"),
+	CD:funcref(self, "_validate_ps"),
+	HI:funcref(self, "_validate_hi"),
+	QUIT:funcref(self, "_validate_quit"),
+	MV:funcref(self, "_validate_ps"),
+	SKY:funcref(self, "_validate_sky"),
+	SUN:funcref(self, "_validate_sun"),
 }
 
-var _sky_cmds : Dictionary = {
-	"sun":[]
+# Validates commands.
+# The structure of the validator is:
+# key = cmd key enum,
+# value = {<subcommand>, <length of whole command, including the key>}
+# E.g. ">>sun speed 22.0" has a subcommand "speed" and a length of 3,
+# so it would be valid in this case
+var cmd_validator : Dictionary = {
+	LS:[], # List all game objects, maybe arg "-p" could be list all
+		  # people
+	PS:[], # Lists all the running machines in the world
+	PKILL:[], # Kills all running machines in the world 
+			 # (options: <name of machine>)
+	CD:[],
+	HI:[],
+	QUIT:[],
+	MV:[],
+	SKY:[],
+	SUN:{"speed":3,"position":4,"brightness":3,}
 }
 
 
 func get_cmds() -> Array:
-	return _cmds.keys()
+	return cmd_keys.keys()
 
 
 func validate(parsed_cmd : PoolStringArray) -> int:
 	var cmd_error : int = CmdErrors.CMD_VALID
-	if parsed_cmd[0] in _cmds.keys():
-		var func_ref : FuncRef = _cmds[parsed_cmd[0]]
-		if func_ref.is_valid():
-			cmd_error = func_ref.call_func(parsed_cmd)
+	if parsed_cmd.size() > 0:
+		if parsed_cmd[0] in cmd_keys.keys():
+			var key : int = cmd_keys[parsed_cmd[0]]
+			var validator_dict : Dictionary = cmd_validator[key]
+			if parsed_cmd[1] in validator_dict.keys():
+				if parsed_cmd.size() != validator_dict[parsed_cmd[1]]:
+						cmd_error = CmdErrors.WRONG_NUMBER_OF_ARGS
+			else:
+				cmd_error = CmdErrors.INVALID_CMD
+		else:
+			cmd_error = CmdErrors.INVALID_CMD
 	else:
-		cmd_error = CmdErrors.INVALID_CMD
+		cmd_error = CmdErrors.NO_CMD_ENTERED
 	return cmd_error
 
 

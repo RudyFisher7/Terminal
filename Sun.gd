@@ -50,7 +50,7 @@ func _on_WorldManager_sun_changed(cmd) -> void:
 	match cmd[1]:
 		"speed":
 			_set_speed(float(cmd[2]))
-		"time":
+		"position":
 			_set_sun_position(cmd[2], cmd[3])
 
 
