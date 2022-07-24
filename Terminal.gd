@@ -16,11 +16,12 @@ export var path_to_terminal : NodePath
 const prompt : String = ">>"
 
 
-var cmd_lib : = CommandLibrary
+var cmd_lib : Node = CommandLibrary
 var cmd : String = ""
 var parsed_cmd : PoolStringArray = []
 var cmd_delimiter : String = " "
 var cmd_execute : String = "\n"
+
 
 onready var terminal : TextEdit = get_node(path_to_terminal)
 
@@ -31,29 +32,42 @@ func _ready() -> void:
 	terminal.text += prompt
 
 
+# Connects the signals this terminal Node emits to the necessary
+# Nodes that need to receive them.
 func _connect_cmd_signal_to_world_manager() -> void:
 	var sig : String = "cmd_executed"
 	var method : String = "_on_Terminal_cmd_executed"
 	var err = connect(sig, WorldManager, method)
 
 
+# Adds all the names of the cmds and subcmds into
+# this terminal's TextEdit Node's keywords for syntax
+# highlighting.
 func _add_cmds_to_keywords() -> void:
 	for cmd in cmd_lib.get_cmds():
-		terminal.add_keyword_color(cmd, Color.royalblue);
+		terminal.add_keyword_color(cmd, Color.royalblue)
+	for cmd in cmd_lib.get_all_subcmds():
+		terminal.add_keyword_color(cmd, Color.tan)
 
 
+# Parses the cmd that was just imputed by the user.
+# Essentially, splits the entered String into a
+# PoolStringArray.
 func _parse_cmd_and_args() -> void:
 	parsed_cmd = cmd.split(cmd_delimiter, false)
-	
-	for string in parsed_cmd:
-		print(string)
+	print(parsed_cmd)
 
 
+# Executes the entered cmd if valid, printing a error message
+# or success message to the terminal. If this terminal doesn't
+# execute the cmd directly, it emits the necessary signal that
+# correlates with the cmd.name, so the receiver can carry on the
+# execution.
 func _execute_cmd() -> void:
 	_parse_cmd_and_args()
 	var err_msg : int = cmd_lib.validate(parsed_cmd)
-	if err_msg == cmd_lib.CmdErrors.CMD_VALID:
-		print(parsed_cmd[0] + " is a cmd!")
+	if err_msg == Cmd.Error.CMD_VALID:
+		terminal.text += Cmd.Error.keys()[err_msg] + "\n"
 		match parsed_cmd[0]:
 			"hi":
 				terminal.text += "Hello! ^_^ I'm so happy!\n"
@@ -69,7 +83,7 @@ func _execute_cmd() -> void:
 			_:
 				emit_signal("cmd_executed", parsed_cmd)
 	else:
-		terminal.text += cmd_lib.CmdErrors.keys()[err_msg] + "\n"
+		terminal.text += Cmd.Error.keys()[err_msg] + "\n"
 	
 	terminal.text += prompt
 	cmd = ""

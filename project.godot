@@ -13,9 +13,15 @@ _global_script_classes=[ {
 "class": "Cmd",
 "language": "GDScript",
 "path": "res://Cmd.gd"
+}, {
+"base": "Reference",
+"class": "DateTime",
+"language": "GDScript",
+"path": "res://DateTime.gd"
 } ]
 _global_script_class_icons={
-"Cmd": ""
+"Cmd": "",
+"DateTime": ""
 }
 
 [application]

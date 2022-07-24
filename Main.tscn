@@ -15,8 +15,10 @@ data = PoolVector3Array( -34.0133, 1.2387, -34.0133, 34.0133, 1.2387, 34.0133, -
 [node name="Main" type="Spatial"]
 
 [node name="Terminal" parent="." instance=ExtResource( 1 )]
-margin_left = 128.0
-margin_right = 128.0
+margin_left = 3.0
+margin_top = 2.0
+margin_right = 3.0
+margin_bottom = 2.0
 
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( -4.33641e-08, -0.125801, 0.992056, -5.49892e-09, 0.992056, 0.125801, -1, -8.88178e-16, -4.37114e-08, 357.047, 45.6696, 0 )
