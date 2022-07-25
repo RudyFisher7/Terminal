@@ -14,6 +14,7 @@ signal cmd_executed(cmd_to_obey)
 export var path_to_terminal : NodePath
 
 const prompt : String = ">>"
+const newline : String = "\n"
 
 
 var cmd_lib : Node = CommandLibrary
@@ -27,6 +28,7 @@ onready var terminal : TextEdit = get_node(path_to_terminal)
 
 
 func _ready() -> void:
+	var err = terminal.get_menu().connect("visibility_changed", self, "_force_popup_to_hide")
 	_connect_cmd_signal_to_world_manager()
 	_add_cmds_to_keywords()
 	terminal.text += prompt
@@ -44,7 +46,7 @@ func _connect_cmd_signal_to_world_manager() -> void:
 # this terminal's TextEdit Node's keywords for syntax
 # highlighting.
 func _add_cmds_to_keywords() -> void:
-	for cmd in cmd_lib.get_cmds():
+	for cmd in cmd_lib.get_cmd_names():
 		terminal.add_keyword_color(cmd, Color.royalblue)
 	for cmd in cmd_lib.get_all_subcmds():
 		terminal.add_keyword_color(cmd, Color.tan)
@@ -66,29 +68,42 @@ func _parse_cmd_and_args() -> void:
 func _execute_cmd() -> void:
 	_parse_cmd_and_args()
 	var err_msg : int = cmd_lib.validate(parsed_cmd)
+	terminal.text += Cmd.Error.keys()[err_msg] + newline
 	if err_msg == Cmd.Error.CMD_VALID:
-		terminal.text += Cmd.Error.keys()[err_msg] + "\n"
 		match parsed_cmd[0]:
+			"help":
+				_execute_help(parsed_cmd)
 			"hi":
 				terminal.text += "Hello! ^_^ I'm so happy!\n"
 			"quit":
-				terminal.text += "Bye! ^_^ Bye!\n"
-				_set_cursor_to_next_prompt()
-				terminal.readonly = true
-				if parsed_cmd.size() == 2:
-					var duration : float = float(parsed_cmd[1])
-					var timer : = get_tree().create_timer(duration)
-					yield(timer, "timeout")
-				get_tree().quit(0)
+				_execute_quit(parsed_cmd)
 			_:
 				emit_signal("cmd_executed", parsed_cmd)
-	else:
-		terminal.text += Cmd.Error.keys()[err_msg] + "\n"
 	
 	terminal.text += prompt
 	cmd = ""
 	parsed_cmd = []
 	_set_cursor_to_next_prompt()
+
+
+func _execute_help(parsed_cmd : PoolStringArray) -> void:
+	terminal.text += "Currently connected cmds:\n"
+	var temp_text : String = ""
+	for cmd_name in cmd_lib.get_cmd_names():
+		terminal.text += cmd_lib.get_cmd_to_string(cmd_name) + newline
+	#temp_text = temp_text.trim_suffix(newline)
+	terminal.text += temp_text
+
+
+func _execute_quit(parsed_cmd : PoolStringArray) -> void:
+	terminal.text += "Bye! ^_^ Bye!\n"
+	_set_cursor_to_next_prompt()
+	terminal.readonly = true
+	if parsed_cmd.size() == 2:
+		var duration : float = float(parsed_cmd[1])
+		var timer : = get_tree().create_timer(duration)
+		yield(timer, "timeout")
+	get_tree().quit(0)
 
 
 func _set_cursor_to_next_prompt() -> void:
@@ -130,3 +145,7 @@ func _on_TextEdit_cursor_changed() -> void:
 	
 	if cursor_column < prompt.length():
 		terminal.cursor_set_column(prompt.length())
+
+
+func _force_popup_to_hide() -> void:
+	terminal.get_menu().visible = false

@@ -11,13 +11,6 @@ export var path_to_pivot : NodePath
 export var path_to_light : NodePath
 
 
-const MINUTES_PER_HOUR : float = 60.0
-const HOURS_PER_DAY : float = 24.0
-const SUN_ANGLE_AT_MIDNIGHT : int = 180
-const MINUTES_PER_DEGREE : float = 4.0
-const NOON_AND_MIDNIGHT : float = 12.0
-
-
 var angular_speed_deg : float = 32.0
 var previous_time_of_day : = DateTime.new()
 var time_of_day : = DateTime.new()

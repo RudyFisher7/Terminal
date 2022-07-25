@@ -14,6 +14,7 @@ var _sun_cmds : Dictionary = {
 
 
 var _cmds : Dictionary = {
+	"help":Cmd.new("help"),
 	"ls":Cmd.new("ls"),
 	"ps":Cmd.new("ps"),
 	"pkill":Cmd.new("pkill"),
@@ -26,13 +27,27 @@ var _cmds : Dictionary = {
 }
 
 
+func get_cmd_to_string(cmd_name : String) -> String:
+	var cmd = _cmds[cmd_name]
+	
+	if cmd is Cmd:
+		return _cmds[cmd_name].to_string()
+	elif cmd is Dictionary:
+		var result : String = "cmd: " + cmd_name + "\n"
+		for key in cmd.keys():
+			result += "\t" + cmd[key].subcmd_to_string() + "\n"
+		return result
+	else:
+		return ""
+
+
 func get_all_cmd_names() -> Array:
 	var cmd_keys = _cmds.keys()
 	cmd_keys.append_array(_sun_cmds.keys())
 	return cmd_keys
 
 
-func get_cmds() -> Array:
+func get_cmd_names() -> Array:
 	return _cmds.keys()
 
 

@@ -83,3 +83,20 @@ func _validate_arg_type(arg : String) -> bool:
 			return true
 		_:
 			return true
+
+
+func to_string() -> String:
+	if subcmd == null:
+		return "cmd: " + name + " -args --type." + ArgType.keys()[arg_type] + " --num." + String(num_args)
+	return "cmd: " + name + "\n\tsubcmd: " + subcmd.to_string()
+
+
+func subcmd_to_string() -> String:
+	return "subcmd: " + subcmd.name + " -args --type." + ArgType.keys()[subcmd.arg_type] + " --num." + String(subcmd.num_args)
+
+
+func _get_arg_string() -> String:
+	var args : String = ""
+	for arg in num_args:
+		args += String(arg) + ","
+	return args
