@@ -11,7 +11,7 @@ export var path_to_pivot : NodePath
 export var path_to_light : NodePath
 
 
-var angular_speed_deg : float = 32.0
+var angular_speed_deg : float = 2.0
 var previous_time_of_day : = DateTime.new()
 var time_of_day : = DateTime.new()
 

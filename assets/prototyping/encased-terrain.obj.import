@@ -1,0 +1,20 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/encased-terrain.obj-9c3a3a2d33ea902e625d91c5cc94cae6.mesh"
+
+[deps]
+
+files=[ "res://.import/encased-terrain.obj-9c3a3a2d33ea902e625d91c5cc94cae6.mesh" ]
+
+source_file="res://assets/prototyping/encased-terrain.obj"
+dest_files=[ "res://.import/encased-terrain.obj-9c3a3a2d33ea902e625d91c5cc94cae6.mesh", "res://.import/encased-terrain.obj-9c3a3a2d33ea902e625d91c5cc94cae6.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+octahedral_compression=true
+optimize_mesh_flags=4286

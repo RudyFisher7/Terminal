@@ -1,0 +1,20 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/uneven-terrain.obj-666bf4f219bb295b6f4c6307fdd006a3.mesh"
+
+[deps]
+
+files=[ "res://.import/uneven-terrain.obj-666bf4f219bb295b6f4c6307fdd006a3.mesh" ]
+
+source_file="res://assets/prototyping/uneven-terrain.obj"
+dest_files=[ "res://.import/uneven-terrain.obj-666bf4f219bb295b6f4c6307fdd006a3.mesh", "res://.import/uneven-terrain.obj-666bf4f219bb295b6f4c6307fdd006a3.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+octahedral_compression=true
+optimize_mesh_flags=4286

@@ -1,0 +1,20 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/ico-sphere.obj-cbf3236825ac0f915c66cbbcf5547b5d.mesh"
+
+[deps]
+
+files=[ "res://.import/ico-sphere.obj-cbf3236825ac0f915c66cbbcf5547b5d.mesh" ]
+
+source_file="res://assets/prototyping/ico-sphere.obj"
+dest_files=[ "res://.import/ico-sphere.obj-cbf3236825ac0f915c66cbbcf5547b5d.mesh", "res://.import/ico-sphere.obj-cbf3236825ac0f915c66cbbcf5547b5d.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+octahedral_compression=true
+optimize_mesh_flags=4286
