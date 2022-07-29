@@ -34,6 +34,7 @@ config/icon="res://icon.png"
 
 WorldManager="*res://WorldManager.tscn"
 CommandLibrary="*res://CommandLibrary.gd"
+GlobalProperties="*res://GlobalProperties.gd"
 
 [display]
 
@@ -92,6 +93,11 @@ look_left={
 look_right={
 "deadzone": 0.5,
 "events": [ Object(InputEventJoypadMotion,"resource_local_to_scene":false,"resource_name":"","device":-1,"axis":2,"axis_value":1.0,"script":null)
+ ]
+}
+jump={
+"deadzone": 0.5,
+"events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":0,"pressure":0.0,"pressed":false,"script":null)
  ]
 }
 

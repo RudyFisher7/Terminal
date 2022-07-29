@@ -32,7 +32,7 @@ func _process(delta) -> void:
 	
 	if !previous_time_of_day.equals(time_of_day):
 		previous_time_of_day.copy_other(time_of_day)
-		print(time_of_day.to_string())
+		#print(time_of_day.to_string())
 
 
 func _on_WorldManager_sun_changed(cmd) -> void:
