@@ -22,6 +22,7 @@ var cmd : String = ""
 var parsed_cmd : PoolStringArray = []
 var cmd_delimiter : String = " "
 var cmd_execute : String = "\n"
+var cursor_prev_line : int = 0
 
 
 onready var terminal : TextEdit = get_node(path_to_terminal)
@@ -34,6 +35,7 @@ func _ready() -> void:
 	terminal.text += prompt
 	terminal.cursor_set_block_mode(true)
 	terminal.cursor_set_blink_enabled(false)
+	terminal.grab_focus()
 
 
 # Connects the signals this terminal Node emits to the necessary
@@ -120,22 +122,30 @@ func _on_TextEdit_text_changed() -> void:
 	var line_count : int = terminal.get_line_count()
 	var line : String = terminal.get_line(line_count - 1)
 	var revised_line : String = line
-	#TODO: Adjust for pressing enter while cursor is not at end of cmd
-	if !terminal.text.ends_with(cmd_execute):
-		if !line.begins_with(prompt):
-			var arrow : String = ">" 
-			if!line.begins_with(arrow):
-				revised_line = line.indent(prompt)
-				cursor_column += prompt.length()
-			else:
-				revised_line = line.indent(arrow)
-				cursor_column += arrow.length()
-			terminal.set_line(line_count - 1, revised_line)
-			terminal.cursor_set_line(line_count - 1)
-			terminal.cursor_set_column(cursor_column)
-		cmd = revised_line.trim_prefix(prompt)
+	
+	if cursor_prev_line != cursor_line:
+		if !terminal.text.ends_with(cmd_execute):
+			terminal.undo()
+			line = terminal.get_line(line_count - 2) # -2 because we are still in signal callback handler function
+			terminal.cursor_set_column(line.length())
+		else:
+			_execute_cmd()
+			cursor_prev_line = terminal.cursor_get_line()
 	else:
-		_execute_cmd()
+		if !terminal.text.ends_with(cmd_execute): # Is this check redundant?
+			if !line.begins_with(prompt):
+				var arrow : String = ">" 
+				if!line.begins_with(arrow):
+					revised_line = line.indent(prompt)
+					cursor_column += prompt.length()
+				else:
+					revised_line = line.indent(arrow)
+					cursor_column += arrow.length()
+				terminal.set_line(line_count - 1, revised_line)
+				terminal.cursor_set_line(line_count - 1)
+				terminal.cursor_set_column(cursor_column)
+			cmd = revised_line.trim_prefix(prompt)
+	terminal.clear_undo_history()
 
 
 func _on_TextEdit_cursor_changed() -> void:
