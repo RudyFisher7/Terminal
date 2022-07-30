@@ -8,6 +8,7 @@ extends Node
 #####################################################################
 
 signal sun_changed(cmd)
+signal time_changed(cmd)
 
 
 # Called when the node enters the scene tree for the first time.
@@ -24,3 +25,6 @@ func _on_Terminal_cmd_executed(parsed_cmd) -> void:
 	match parsed_cmd[0]:
 		"sun":
 			emit_signal("sun_changed", parsed_cmd)
+		"time":
+			emit_signal("time_changed", parsed_cmd)
+			

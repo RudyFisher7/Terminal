@@ -13,6 +13,12 @@ var _sun_cmds : Dictionary = {
 }
 
 
+var _time_cmds : Dictionary = {
+	"am":Cmd.new("time", Cmd.new("am", null, [1, 2], Cmd.ArgType.INT)),
+	"pm":Cmd.new("time", Cmd.new("pm", null, [1, 2], Cmd.ArgType.INT)),
+}
+
+
 var _cmds : Dictionary = {
 	"help":Cmd.new("help"),
 	"ls":Cmd.new("ls"),
@@ -24,6 +30,7 @@ var _cmds : Dictionary = {
 	"mv":Cmd.new("mv"),
 	"sky":Cmd.new("sky"),
 	"sun":_sun_cmds,
+	"time":_time_cmds,
 }
 
 
@@ -44,6 +51,7 @@ func get_cmd_to_string(cmd_name : String) -> String:
 func get_all_cmd_names() -> Array:
 	var cmd_keys = _cmds.keys()
 	cmd_keys.append_array(_sun_cmds.keys())
+	cmd_keys.append_array(_time_cmds.keys())
 	return cmd_keys
 
 
@@ -53,6 +61,7 @@ func get_cmd_names() -> Array:
 
 func get_all_subcmds() -> Array:
 	var cmd_keys = _sun_cmds.keys()
+	cmd_keys.append_array(_time_cmds.keys())
 	#cmd_keys.append_array(<other subcmd dictionary>.keys())
 	return cmd_keys
 

@@ -7,12 +7,14 @@ extends Reference
 
 class_name Cmd
 
+
 enum ArgType {
 	NONE,
 	FLOAT,
 	INT,
 	STRING,
 }
+
 
 enum Error {
 	CMD_VALID,
@@ -25,12 +27,15 @@ enum Error {
 	NO_CMD_ENTERED,
 }
 
+
 const name_index : int = 0
+
 
 var name : String
 var subcmd : Cmd
 var num_args : Array
 var arg_type : int
+
 
 func _init(in_name : String, in_subcmd : Cmd = null, 
 		   in_num_args : = [0], 

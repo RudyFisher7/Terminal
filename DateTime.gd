@@ -10,6 +10,9 @@ extends Reference
 class_name DateTime
 
 
+enum Flag {AM, PM,}
+
+
 const SUN_ANGLE_AT_MIDNIGHT : int = 180
 const MINUTES_PER_DEGREE : float = 4.0
 const MINUTES_PER_HOUR : float = 60.0
@@ -20,6 +23,7 @@ const DAYS_PER_MONTH : int = 24
 const MONTHS_PER_YEAR : int = 8
 
 
+var _flag : int = Flag.AM
 var _time_of_day_hrs : float
 var _year : int
 var _month: int
@@ -34,6 +38,10 @@ func _init(in_time_of_day_hrs : float = 0.0,
 	_year = in_year
 	_month = in_month
 	_day_of_month = in_day_of_month
+
+
+func flag() -> int:
+	return _flag
 
 
 func time_of_day_hours() -> float:
@@ -70,22 +78,23 @@ func copy_other(other : DateTime) -> void:
 # portion of this object. Also increments the calendar year accordingly.
 func set_time_of_day(sun_rotation_degrees : Vector3) -> void:
 	var minutes : int
-	var is_am : bool = false
-	if sun_rotation_degrees.x >= 0.0: # PM
+	if sun_rotation_degrees.x >= 0.0: # Negative angle values are AM
 		minutes = int(sun_rotation_degrees.x * MINUTES_PER_DEGREE)
 		_new_day_just_began = false
-	else: # AM
+		_flag = Flag.PM
+	else:
 		var dif : int = SUN_ANGLE_AT_MIDNIGHT + int(sun_rotation_degrees.x)
 		minutes = int(dif * MINUTES_PER_DEGREE)
-		is_am = true
+		_flag = Flag.AM
 	_time_of_day_hrs = minutes / MINUTES_PER_HOUR
 	
 	if _time_of_day_hrs < 1.0:
 		_time_of_day_hrs += NOON_AND_MIDNIGHT
 	
 	if !_new_day_just_began:
-		if is_am && (int(time_of_day_hours()) == FIRST_HOUR_OF_DAY):
+		if _flag == Flag.AM && (int(time_of_day_hours()) == FIRST_HOUR_OF_DAY):
 			_increment_day()
+
 
 func to_string() -> String:
 	var me : String = ""
@@ -93,29 +102,37 @@ func to_string() -> String:
 	var minutes_in_current_hour : int = (_time_of_day_hrs - tod_hrs_int) * MINUTES_PER_HOUR
 	me += String(tod_hrs_int) + ":"
 	me += String(minutes_in_current_hour)
+	me += Flag.keys()[_flag]
 	me += " -- " + String(_day_of_month) + " " + String(_month) + ", " + String(_year)
 	return me
 
 
-# TODO:
-func get_sun_rotation_degrees_x_from_time_of_day(hours : int, minutes : int) -> float:
-	var sun_rotation_degrees_x : float = 0.0
+# Gets the rotation about the x axis the sun should be at the given time
+# as defined by the given hours, minutes in the current hour, and am/pm flag
+func get_sun_rotation_degrees_x_from_time_of_day(hours : int, 
+												 minutes : int, 
+												 flag : int) -> float:
+	hours = clamp(hours, 0, HOURS_PER_DAY / 2)
+	minutes = clamp(minutes, 0, MINUTES_PER_HOUR - 1.0)
 	
-#	var minutes : int
-#	var is_am : bool = false
-#	if sun_rotation_degrees.x >= 0.0: # PM
-#		minutes = int(sun_rotation_degrees.x * MINUTES_PER_DEGREE)
-#		_new_day_just_began = false
-#	else: # AM
-#		var dif : int = SUN_ANGLE_AT_MIDNIGHT + int(sun_rotation_degrees.x)
-#		minutes = int(dif * MINUTES_PER_DEGREE)
-#		is_am = true
-#	_time_of_day_hrs = minutes / MINUTES_PER_HOUR
-#
-#	var minutes_in_current_hour : int = (_time_of_day_hrs - int(_time_of_day_hrs)) * MINUTES_PER_HOUR
-#
-#	if _time_of_day_hrs < 1.0:
-#		_time_of_day_hrs += NOON_AND_MIDNIGHT
+	var sun_rotation_degrees_x : float = 0.0
+	var cumulative_minutes : float = minutes + (hours * MINUTES_PER_HOUR)
+	
+	_flag = flag
+	_time_of_day_hrs = cumulative_minutes / MINUTES_PER_HOUR
+	
+	sun_rotation_degrees_x = cumulative_minutes / MINUTES_PER_DEGREE
+	
+	if hours == NOON_AND_MIDNIGHT:
+		if _flag == Flag.PM:
+			_new_day_just_began = false
+			sun_rotation_degrees_x -= SUN_ANGLE_AT_MIDNIGHT
+	else:
+		if _flag == Flag.AM:
+			sun_rotation_degrees_x -= SUN_ANGLE_AT_MIDNIGHT
+	
+	if _time_of_day_hrs < 1.0:
+		_time_of_day_hrs += NOON_AND_MIDNIGHT
 	
 	return sun_rotation_degrees_x
 

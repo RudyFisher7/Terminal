@@ -32,6 +32,8 @@ func _ready() -> void:
 	_connect_cmd_signal_to_world_manager()
 	_add_cmds_to_keywords()
 	terminal.text += prompt
+	terminal.cursor_set_block_mode(true)
+	terminal.cursor_set_blink_enabled(false)
 
 
 # Connects the signals this terminal Node emits to the necessary
@@ -118,6 +120,7 @@ func _on_TextEdit_text_changed() -> void:
 	var line_count : int = terminal.get_line_count()
 	var line : String = terminal.get_line(line_count - 1)
 	var revised_line : String = line
+	#TODO: Adjust for pressing enter while cursor is not at end of cmd
 	if !terminal.text.ends_with(cmd_execute):
 		if !line.begins_with(prompt):
 			var arrow : String = ">" 
