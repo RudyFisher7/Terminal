@@ -17,7 +17,7 @@ transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.54
 shape = SubResource( 1 )
 
 [node name="Eyes" type="Position3D" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.796945, 0 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.40133, 0 )
 
 [node name="YPivot" type="Position3D" parent="Eyes"]
 

@@ -23,7 +23,6 @@ margin_bottom = 421.0
 rect_min_size = Vector2( 0, 16 )
 size_flags_horizontal = 3
 size_flags_vertical = 3
-text = ">>test text"
 syntax_highlighting = true
 show_line_numbers = true
 bookmark_gutter = true
