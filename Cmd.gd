@@ -75,7 +75,7 @@ func validate(pool_cmd : PoolStringArray) -> int:
 			return Error.WRONG_NUMBER_OF_ARGS
 		
 		for i in range(first_arg_index, cmd.size()):
-			if !_validate_arg_type(cmd[i]):
+			if !_validate_arg_type(cmd[i], i):
 				return Error.ARGS_WRONG_TYPE
 	return Error.CMD_VALID
 
@@ -83,23 +83,22 @@ func validate(pool_cmd : PoolStringArray) -> int:
 # Returns true if the given arg can be converted to a valid
 # specific type. The type that is considered valid is determined 
 # by self.arg_type.
-func _validate_arg_type(arg : String) -> bool:
+func _validate_arg_type(arg : String, index : int) -> bool:
 	var result : bool = false
-	for arg_type in arg_types:
-		match arg_type:
-			ArgType.NONE:
-				result = true
-			ArgType.FLOAT:
-				result = arg.is_valid_float()
-			ArgType.INT:
-				result = arg.is_valid_integer()
-			ArgType.STRING:
-				result = true
-			ArgType.FUNCREF:
-				if target != null:
-					result = target.has_method(arg)
-				else:
-					result = false
+	match arg_types[index]:
+		ArgType.NONE:
+			result = true
+		ArgType.FLOAT:
+			result = arg.is_valid_float()
+		ArgType.INT:
+			result = arg.is_valid_integer()
+		ArgType.STRING:
+			result = true
+		ArgType.FUNCREF:
+			if target != null:
+				result = target.has_method(arg)
+			else:
+				result = false
 	return result
 
 
