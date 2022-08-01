@@ -1,16 +1,20 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://Player.gd" type="Script" id=1]
+[ext_resource path="res://Terminal.tscn" type="PackedScene" id=2]
 
 [sub_resource type="CapsuleShape" id=1]
 radius = 0.297024
 height = 0.5
+
+[sub_resource type="SphereShape" id=2]
 
 [node name="Player" type="KinematicBody"]
 script = ExtResource( 1 )
 path_to_eyes = NodePath("Eyes")
 path_to_y_pivot = NodePath("Eyes/YPivot")
 path_to_x_pivot = NodePath("Eyes/YPivot/XPivot")
+path_to_interact_sensor = NodePath("InteractSensor")
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.546467, 0 )
@@ -26,3 +30,14 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.40133, 0 )
 [node name="Camera" type="Camera" parent="Eyes/YPivot/XPivot"]
 current = true
 far = 8192.0
+
+[node name="InteractSensor" type="Area" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="InteractSensor"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -1 )
+shape = SubResource( 2 )
+
+[node name="Terminal" parent="." instance=ExtResource( 2 )]
+
+[connection signal="body_entered" from="InteractSensor" to="." method="_on_InteractSensor_body_entered"]
+[connection signal="body_exited" from="InteractSensor" to="." method="_on_InteractSensor_body_exited"]

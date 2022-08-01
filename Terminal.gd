@@ -1,4 +1,4 @@
-extends Control
+extends CanvasLayer
 
 # TODO: Parameterize cmds (e.g. "mv holly x y", could be a move 
 # command that would move the character named "Holly" to position 
@@ -17,7 +17,10 @@ const prompt : String = ">>"
 const newline : String = "\n"
 
 
-var cmd_lib : Node = CommandLibrary
+var _current_program : Program
+
+
+var cmd_lib : Node = GlobalCommandLibrary
 var cmd : String = ""
 var parsed_cmd : PoolStringArray = []
 var cmd_delimiter : String = " "

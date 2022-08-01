@@ -7,15 +7,15 @@ extends Node
 
 
 var _sun_cmds : Dictionary = {
-	"speed":Cmd.new("sun", Cmd.new("speed", null, [1], Cmd.ArgType.FLOAT)),
-	"position":Cmd.new("sun", Cmd.new("position", null, [2], Cmd.ArgType.FLOAT)),
-	"brightness":Cmd.new("sun", Cmd.new("brightness", null, [1], Cmd.ArgType.FLOAT)),
+	"speed":Cmd.new("sun", Cmd.new("speed", null, [1], [Cmd.ArgType.FLOAT])),
+	"position":Cmd.new("sun", Cmd.new("position", null, [2], [Cmd.ArgType.FLOAT])),
+	"brightness":Cmd.new("sun", Cmd.new("brightness", null, [1], [Cmd.ArgType.FLOAT])),
 }
 
 
 var _time_cmds : Dictionary = {
-	"am":Cmd.new("time", Cmd.new("am", null, [1, 2], Cmd.ArgType.INT)),
-	"pm":Cmd.new("time", Cmd.new("pm", null, [1, 2], Cmd.ArgType.INT)),
+	"am":Cmd.new("time", Cmd.new("am", null, [1, 2], [Cmd.ArgType.INT])),
+	"pm":Cmd.new("time", Cmd.new("pm", null, [1, 2], [Cmd.ArgType.INT])),
 }
 
 
@@ -26,7 +26,7 @@ var _cmds : Dictionary = {
 	"pkill":Cmd.new("pkill"),
 	"cd":Cmd.new("cd"),
 	"hi":Cmd.new("hi"),
-	"quit":Cmd.new("quit", null, [0, 1], Cmd.ArgType.FLOAT),
+	"quit":Cmd.new("quit", null, [0, 1], [Cmd.ArgType.FLOAT]),
 	"mv":Cmd.new("mv"),
 	"sky":Cmd.new("sky"),
 	"sun":_sun_cmds,

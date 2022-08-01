@@ -1,20 +1,13 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=7 format=2]
 
-[ext_resource path="res://Terminal.tscn" type="PackedScene" id=1]
 [ext_resource path="res://assets/materials/shadeless_material.tres" type="Material" id=2]
 [ext_resource path="res://Sun.tscn" type="PackedScene" id=3]
 [ext_resource path="res://Player.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scenes/PrototypeLevel.tscn" type="PackedScene" id=5]
-[ext_resource path="res://scenes/ProgrammableObject.tscn" type="PackedScene" id=6]
+[ext_resource path="res://scenes/ProgrammableNode.tscn" type="PackedScene" id=6]
 [ext_resource path="res://assets/sky.obj" type="ArrayMesh" id=7]
 
 [node name="Main" type="Spatial"]
-
-[node name="Terminal" parent="." instance=ExtResource( 1 )]
-margin_left = 3.0
-margin_top = 2.0
-margin_right = 3.0
-margin_bottom = 2.0
 
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( -4.33641e-08, -0.125801, 0.992056, -5.49892e-09, 0.992056, 0.125801, -1, -8.88178e-16, -4.37114e-08, 357.047, 45.6696, 0 )
@@ -35,6 +28,3 @@ transform = Transform( -0.765214, 0, 0.643776, 0, 1, 0, -0.643776, 0, -0.765214,
 [node name="encased-terrain" parent="." instance=ExtResource( 5 )]
 
 [node name="ProgrammableObject" parent="." instance=ExtResource( 6 )]
-
-[node name="ProgrammableObject2" parent="." instance=ExtResource( 6 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.1347, 5.44462, -32.1971 )

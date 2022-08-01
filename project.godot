@@ -19,15 +19,21 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://DateTime.gd"
 }, {
-"base": "RigidBody",
-"class": "ProgrammableObject",
+"base": "Reference",
+"class": "Program",
 "language": "GDScript",
-"path": "res://scenes/ProgrammableObject.gd"
+"path": "res://Program.gd"
+}, {
+"base": "RigidBody",
+"class": "ProgrammableNode",
+"language": "GDScript",
+"path": "res://scenes/ProgrammableNode.gd"
 } ]
 _global_script_class_icons={
 "Cmd": "",
 "DateTime": "",
-"ProgrammableObject": ""
+"Program": "",
+"ProgrammableNode": ""
 }
 
 [application]
@@ -39,7 +45,7 @@ config/icon="res://icon.png"
 [autoload]
 
 WorldManager="*res://WorldManager.tscn"
-CommandLibrary="*res://CommandLibrary.gd"
+GlobalCommandLibrary="*res://GlobalCommandLibrary.gd"
 GlobalProperties="*res://GlobalProperties.gd"
 
 [display]

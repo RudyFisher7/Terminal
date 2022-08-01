@@ -9,6 +9,7 @@ extends KinematicBody
 export var path_to_eyes : NodePath
 export var path_to_y_pivot : NodePath
 export var path_to_x_pivot : NodePath
+export var path_to_interact_sensor : NodePath
 
 
 const cam_sensitivity_divisor_touch : float = 256.0
@@ -18,11 +19,13 @@ const jump_speed : float = GlobalProperties.gravity * 0.2
 
 
 var fall_speed : float = 0.0
+var _programmable : ProgrammableNode
 
 
 onready var eyes : Position3D = get_node(path_to_eyes)
 onready var y_pivot : Position3D = get_node(path_to_y_pivot)
 onready var x_pivot : Position3D = get_node(path_to_x_pivot)
+onready var interact_sensor : Area = get_node(path_to_interact_sensor)
 
 
 func _ready() -> void:
@@ -58,15 +61,11 @@ func _unhandled_input(event) -> void:
 		get_tree().set_input_as_handled()
 
 
+func _on_InteractSensor_body_entered(body : Node) -> void:
+	if body is ProgrammableNode:
+		_programmable = body
 
 
-
-
-
-
-
-
-
-
-
-
+func _on_InteractSensor_body_exited(body : Node) -> void:
+	if body == _programmable:
+		_programmable = null

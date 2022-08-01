@@ -1,9 +1,10 @@
 extends Reference
 
-# TODO
+
 #####################################################################
 # Represents a cmd.
 #####################################################################
+
 
 class_name Cmd
 
@@ -13,6 +14,7 @@ enum ArgType {
 	FLOAT,
 	INT,
 	STRING,
+	FUNCREF,
 }
 
 
@@ -25,6 +27,8 @@ enum Error {
 	ARGS_OUT_OF_RANGE,
 	WRONG_NUMBER_OF_ARGS,
 	NO_CMD_ENTERED,
+	FAILED_TO_EXECUTE_ON_TARGET,
+	NO_TARGET_TO_EXECUTE_ON,
 }
 
 
@@ -34,16 +38,19 @@ const name_index : int = 0
 var name : String
 var subcmd : Cmd
 var num_args : Array
-var arg_type : int
+var arg_types : Array
+var target : Object
 
 
 func _init(in_name : String, in_subcmd : Cmd = null, 
 		   in_num_args : = [0], 
-		   in_arg_type : int = ArgType.NONE) -> void:
+		   in_arg_types : Array = [ArgType.NONE],
+		   in_target : Object = null) -> void:
 	name = in_name
 	subcmd = in_subcmd
 	num_args = in_num_args
-	arg_type = in_arg_type
+	arg_types = in_arg_types
+	target = in_target
 
 
 # Validates the given PoolStringArray that contains the parsed cmd
@@ -77,22 +84,39 @@ func validate(pool_cmd : PoolStringArray) -> int:
 # specific type. The type that is considered valid is determined 
 # by self.arg_type.
 func _validate_arg_type(arg : String) -> bool:
-	match arg_type:
-		ArgType.NONE:
-			return true
-		ArgType.FLOAT:
-			return arg.is_valid_float()
-		ArgType.INT:
-			return arg.is_valid_integer()
-		ArgType.STRING:
-			return true
-		_:
-			return true
+	var result : bool = false
+	for arg_type in arg_types:
+		match arg_type:
+			ArgType.NONE:
+				result = true
+			ArgType.FLOAT:
+				result = arg.is_valid_float()
+			ArgType.INT:
+				result = arg.is_valid_integer()
+			ArgType.STRING:
+				result = true
+			ArgType.FUNCREF:
+				if target != null:
+					result = target.has_method(arg)
+				else:
+					result = false
+	return result
+
+
+func execute_on_target() -> int:
+	var result : int = Error.FAILED_TO_EXECUTE_ON_TARGET
+	if arg_types[0] != ArgType.FUNCREF:
+		result = Error.ARGS_WRONG_TYPE
+	elif target == null:
+		result = Error.NO_TARGET_TO_EXECUTE_ON
+	else:
+		pass
+	return result
 
 
 func to_string() -> String:
 	if subcmd == null:
-		return "cmd: " + name + " -args --type." + ArgType.keys()[arg_type] + " --num." + String(num_args)
+		return "cmd: " + name + " -args --types." + get_arg_type_string() + " --num." + String(num_args)
 	return "cmd: " + name + "\n\tsubcmd: " + subcmd.to_string()
 
 
@@ -102,6 +126,13 @@ func subcmd_to_string() -> String:
 
 func _get_arg_string() -> String:
 	var args : String = ""
-	for arg in num_args:
-		args += String(arg) + ","
+	for num in num_args:
+		args += String(num) + ","
 	return args
+
+
+func get_arg_type_string() -> String:
+	var types : String = ""
+	for arg_type in arg_types:
+		types += ArgType.keys()[arg_type] + ","
+	return types
