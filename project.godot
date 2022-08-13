@@ -20,6 +20,11 @@ _global_script_classes=[ {
 "path": "res://DateTime.gd"
 }, {
 "base": "Reference",
+"class": "Function",
+"language": "GDScript",
+"path": "res://Function.gd"
+}, {
+"base": "Reference",
 "class": "Program",
 "language": "GDScript",
 "path": "res://Program.gd"
@@ -32,6 +37,7 @@ _global_script_classes=[ {
 _global_script_class_icons={
 "Cmd": "",
 "DateTime": "",
+"Function": "",
 "Program": "",
 "ProgrammableNode": ""
 }

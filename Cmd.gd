@@ -37,9 +37,11 @@ const name_index : int = 0
 
 var name : String
 var subcmd : Cmd
+var arg_values : Array
 var num_args : Array
 var arg_types : Array
 var target : Object
+var func_ref : FuncRef
 
 
 func _init(in_name : String, in_subcmd : Cmd = null, 
@@ -104,12 +106,10 @@ func _validate_arg_type(arg : String, index : int) -> bool:
 
 func execute_on_target() -> int:
 	var result : int = Error.FAILED_TO_EXECUTE_ON_TARGET
-	if arg_types[0] != ArgType.FUNCREF:
-		result = Error.ARGS_WRONG_TYPE
-	elif target == null:
+	if target == null:
 		result = Error.NO_TARGET_TO_EXECUTE_ON
 	else:
-		pass
+		func_ref.call_funcv(arg_values)
 	return result
 
 
