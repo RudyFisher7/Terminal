@@ -28,30 +28,38 @@ enum Error {
 	NO_FUNCTION_ENTERED,
 	FAILED_TO_EXECUTE,
 	FUNCTION_INVALID,
+	INVALID_TARGET,
 }
 
 
-const name_index : int = 0
+const target_name_index : int = 0
+const name_index : int = 1
 
 
 var name : String
+var target_node : Node
 var func_ref : FuncRef
 var num_args : Array
 var arg_types : Array
 
 
 func _init(in_name : String, 
+		   in_target_node : Node,
 		   in_func_ref : FuncRef,
 		   in_num_args : = [0], 
 		   in_arg_types : Array = [ArgType.NONE]) -> void:
 	name = in_name
+	target_node = in_target_node
 	func_ref = in_func_ref
 	num_args = in_num_args
-	arg_types = in_arg_types
+	arg_types = in_arg_types 
 
 
 func validate(pool_func : PoolStringArray) -> int:
 	var function : = Array(pool_func)
+	if target_node.name != function[target_name_index]:
+		return Error.INVALID_TARGET
+	
 	if name != function[name_index]:
 		return Error.INVALID_FUNCTION
 
@@ -103,7 +111,7 @@ func execute(pool_func : PoolStringArray) -> int:
 
 
 func to_string() -> String:
-	return "func: " + name + " -args --types." + get_arg_type_string() + " --nums." + String(num_args)
+	return "func: " + target_node.name + " " + name + " -args --types." + get_arg_type_string() + " --nums." + String(num_args)
 
 
 func get_arg_type_string() -> String:

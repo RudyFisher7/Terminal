@@ -2,92 +2,69 @@ extends Node
 
 
 #####################################################################
-# Encapsulates a "database" in cache of all commands in the game.
+# Encapsulates a "database" in cache of all functions in the game that
+# are of global scope. Also provides helper methods related to
+# functions.
 #####################################################################
 
 
-var _sun_cmds : Dictionary = {
-	"speed":Cmd.new("sun", Cmd.new("speed", null, [1], [Cmd.ArgType.FLOAT])),
-	"position":Cmd.new("sun", Cmd.new("position", null, [2], [Cmd.ArgType.FLOAT])),
-	"brightness":Cmd.new("sun", Cmd.new("brightness", null, [1], [Cmd.ArgType.FLOAT])),
+const target_index : int = 0
+const arg_num_index : int = 1
+const arg_types_index : int = 2
+
+
+var functions : Dictionary = {
+#	"help":fun.new("help"),
+#	"ls":fun.new("ls"),
+#	"ps":fun.new("ps"),
+#	"pkill":fun.new("pkill"),
+#	"cd":fun.new("cd"),
+#	"hi":fun.new("hi"),
+#	"quit":fun.new("quit", null, [0, 1], [fun.ArgType.FLOAT]),
+#	"mv":fun.new("mv"),
+#	"sky":fun.new("sky"),
+#	"sun":_sun_funs,
+#	"time":_time_funs,
 }
 
 
-var _time_cmds : Dictionary = {
-	"am":Cmd.new("time", Cmd.new("am", null, [1, 2], [Cmd.ArgType.INT])),
-	"pm":Cmd.new("time", Cmd.new("pm", null, [1, 2], [Cmd.ArgType.INT])),
-}
+func get_function_names() -> Array:
+	return functions.keys()
 
 
-var _cmds : Dictionary = {
-	"help":Cmd.new("help"),
-	"ls":Cmd.new("ls"),
-	"ps":Cmd.new("ps"),
-	"pkill":Cmd.new("pkill"),
-	"cd":Cmd.new("cd"),
-	"hi":Cmd.new("hi"),
-	"quit":Cmd.new("quit", null, [0, 1], [Cmd.ArgType.FLOAT]),
-	"mv":Cmd.new("mv"),
-	"sky":Cmd.new("sky"),
-	"sun":_sun_cmds,
-	"time":_time_cmds,
-}
-
-
-func get_cmd_to_string(cmd_name : String) -> String:
-	var cmd = _cmds[cmd_name]
+func validate(parsed_fun : PoolStringArray) -> int:
+	var fun_error : int = Function.Error.fun_VALID
 	
-	if cmd is Cmd:
-		return _cmds[cmd_name].to_string()
-	elif cmd is Dictionary:
-		var result : String = "cmd: " + cmd_name + "\n"
-		for key in cmd.keys():
-			result += "\t" + cmd[key].subcmd_to_string() + "\n"
-		return result
-	else:
-		return ""
-
-
-func get_all_cmd_names() -> Array:
-	var cmd_keys = _cmds.keys()
-	cmd_keys.append_array(_sun_cmds.keys())
-	cmd_keys.append_array(_time_cmds.keys())
-	return cmd_keys
-
-
-func get_cmd_names() -> Array:
-	return _cmds.keys()
-
-
-func get_all_subcmds() -> Array:
-	var cmd_keys = _sun_cmds.keys()
-	cmd_keys.append_array(_time_cmds.keys())
-	#cmd_keys.append_array(<other subcmd dictionary>.keys())
-	return cmd_keys
-
-
-func validate(parsed_cmd : PoolStringArray) -> int:
-	var cmd_error : int = Cmd.Error.CMD_VALID
-	
-	if parsed_cmd.empty():
-		cmd_error = Cmd.Error.NO_CMD_ENTERED
-	elif parsed_cmd[0] in _cmds.keys():
-		var cmd = _cmds[parsed_cmd[0]]
+	if parsed_fun.empty():
+		fun_error = Function.Error.NO_fun_ENTERED
+	elif parsed_fun[0] in functions.keys():
+		var fun = functions[parsed_fun[0]]
 		
-		if cmd is Dictionary:
-			if parsed_cmd.size() > 1:
-				if parsed_cmd[1] in cmd.keys():
-					cmd = cmd[parsed_cmd[1]]
-		
-		if cmd is Cmd:
-			cmd_error = cmd.validate(parsed_cmd)
+		if fun is Function:
+			fun_error = fun.validate(parsed_fun)
 		else:
-			cmd_error = Cmd.Error.INVALID_CMD
+			fun_error = Function.Error.INVALID_fun
 	else:
-		cmd_error = Cmd.Error.INVALID_CMD
+		fun_error = Function.Error.INVALID_fun
 	
-	return cmd_error
+	return fun_error
 
+
+func populate_functions(object : Object, function_builder : Dictionary) -> Dictionary:
+	var functions : Dictionary = {}
+	for fun in object.get_method_list():
+		if fun["flags"] == METHOD_FLAG_NORMAL + METHOD_FLAG_FROM_SCRIPT:
+			var fun_name : String = fun["name"]
+			if fun_name in function_builder.keys():
+				var fun_info : Array = function_builder[fun_name]
+				var function : = Function.new(fun_name, fun_info[target_index],\
+										funcref(fun_info[target_index],\
+										fun_name), fun_info[arg_num_index],\
+										fun_info[arg_types_index])
+				functions[fun_name] = function
+	for key in functions.keys():
+		print(functions[key].to_string())
+	return functions
 
 
 

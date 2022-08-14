@@ -9,12 +9,7 @@ extends RigidBody
 class_name ProgrammableNode
 
 
-var _cmds : Dictionary = {
-	"move":Cmd.new("move", null, [3, 4], [Cmd.ArgType.FLOAT], self),
-}
-
-
-var _program : Program = Program.new(_cmds)
+var _program : Program
 var _speed : float = 0.1
 
 
@@ -22,7 +17,7 @@ var _speed : float = 0.1
 func _ready():
 	print(has_method("get_program_cmd_names"))
 	var fref : FuncRef = funcref(self, "get_program_cmd_names")
-	fref.call_func()
+	fref.call_funcv([])
 
 
 func _physics_process(delta):
@@ -34,7 +29,7 @@ func connect_to_terminal() -> String:
 	return name + ".CONNECTED"
 
 
-func get_program_cmd_names() -> Array:
+func get_program_function_names() -> Array:
 	print("called")
 	return _program.cmd_names()
 

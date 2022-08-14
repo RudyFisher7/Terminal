@@ -10,11 +10,6 @@ config_version=4
 
 _global_script_classes=[ {
 "base": "Reference",
-"class": "Cmd",
-"language": "GDScript",
-"path": "res://Cmd.gd"
-}, {
-"base": "Reference",
 "class": "DateTime",
 "language": "GDScript",
 "path": "res://DateTime.gd"
@@ -35,7 +30,6 @@ _global_script_classes=[ {
 "path": "res://scenes/ProgrammableNode.gd"
 } ]
 _global_script_class_icons={
-"Cmd": "",
 "DateTime": "",
 "Function": "",
 "Program": "",

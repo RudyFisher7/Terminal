@@ -11,12 +11,12 @@ extends Reference
 class_name Program
 
 
-var _cmds : Dictionary
+var _functions : Dictionary
 
 
-func _init(in_cmds : Dictionary) -> void:
-	_cmds = in_cmds
+func _init(in_functions : Dictionary) -> void:
+	_functions = in_functions
 
 
-func cmd_names() -> Array:
-	return _cmds.keys()
+func function_names() -> Array:
+	return _functions.keys()
