@@ -20,6 +20,16 @@ _global_script_classes=[ {
 "path": "res://Function.gd"
 }, {
 "base": "Reference",
+"class": "FunctionLibrary",
+"language": "GDScript",
+"path": "res://FunctionLibrary.gd"
+}, {
+"base": "Node",
+"class": "GlobalFunctionLibrary",
+"language": "GDScript",
+"path": "res://GlobalFunctionLibrary.gd"
+}, {
+"base": "Reference",
 "class": "Program",
 "language": "GDScript",
 "path": "res://Program.gd"
@@ -32,6 +42,8 @@ _global_script_classes=[ {
 _global_script_class_icons={
 "DateTime": "",
 "Function": "",
+"FunctionLibrary": "",
+"GlobalFunctionLibrary": "",
 "Program": "",
 "ProgrammableNode": ""
 }
@@ -45,7 +57,7 @@ config/icon="res://icon.png"
 [autoload]
 
 WorldManager="*res://WorldManager.tscn"
-GlobalCommandLibrary="*res://GlobalCommandLibrary.gd"
+GlobalLibrary="*res://GlobalFunctionLibrary.gd"
 GlobalProperties="*res://GlobalProperties.gd"
 
 [display]

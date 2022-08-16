@@ -68,7 +68,8 @@ func validate(pool_func : PoolStringArray) -> int:
 		return Error.WRONG_NUMBER_OF_ARGS
 	
 	for i in range(first_arg_index, function.size()):
-		if !_validate_arg_type(function[i], i):
+		var type_index : = i - first_arg_index
+		if !_validate_arg_type(function[i], type_index):
 			return Error.ARGS_WRONG_TYPE
 	return Error.FUNCTION_VALID
 
@@ -89,8 +90,10 @@ func _validate_arg_type(arg : String, index : int) -> bool:
 
 func _manage_args(pool_func : PoolStringArray) -> Array:
 	var managed_args : Array = []
-	for index in range(name_index + 1, pool_func.size()):
-		match arg_types[index]:
+	var first_arg_index : = name_index + 1
+	for index in range(first_arg_index, pool_func.size()):
+		var type_index : = index - first_arg_index
+		match arg_types[type_index]:
 			ArgType.FLOAT:
 				managed_args.append(float(pool_func[index]))
 			ArgType.INT:

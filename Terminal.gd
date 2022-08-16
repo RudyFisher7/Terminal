@@ -8,8 +8,6 @@ extends CanvasLayer
 # execute commands to manipulate properties of the game world.
 #####################################################################
 
-# @param PoolStringArray function_to_obey
-signal function_executed(function_to_obey)
 
 export var path_to_terminal : NodePath
 
@@ -17,10 +15,15 @@ const prompt : String = ">>"
 const newline : String = "\n"
 
 
+var function_builder : Dictionary = {
+	"quit":[self, [0, 1], [Function.ArgType.FLOAT]],
+	"help":[self, [0], [Function.ArgType.NONE]],
+}
+
 var _current_program : Program
 
 
-var function_lib : Node = GlobalCommandLibrary
+var function_lib : = FunctionLibrary.new()
 var function : String = ""
 var parsed_function : PoolStringArray = []
 var function_delimiter : String = " "
@@ -32,22 +35,16 @@ onready var terminal : TextEdit = get_node(path_to_terminal)
 
 
 func _ready() -> void:
-	var err = terminal.get_menu().connect("visibility_changed", self,\
+	var funs : = function_lib.populate_functions(self, function_builder)
+	function_lib.functions.merge(funs)
+	function_lib.functions.merge(GlobalLibrary.function_library.functions)
+	var _err = terminal.get_menu().connect("visibility_changed", self,\
 											 "_force_popup_to_hide")
-	_connect_function_signal_to_world_manager()
 	_add_functions_to_keywords()
 	terminal.text += prompt
 	terminal.cursor_set_block_mode(true)
 	terminal.cursor_set_blink_enabled(false)
 	terminal.grab_focus()
-
-
-# Connects the signals this terminal Node emits to the necessary
-# Nodes that need to receive them.
-func _connect_function_signal_to_world_manager() -> void:
-	var sig : String = "function_executed"
-	var method : String = "_on_Terminal_function_executed"
-	var err = connect(sig, WorldManager, method)
 
 
 # Adds all the names of the functions and subfunctions into
@@ -75,16 +72,9 @@ func _execute_function() -> void:
 	_parse_function_and_args()
 	var err_msg : int = function_lib.validate(parsed_function)
 	terminal.text += Function.Error.keys()[err_msg] + newline
-	if err_msg == Function.Error.function_VALID:
-		match parsed_function[0]:
-			"help":
-				_execute_help(parsed_function)
-			"hi":
-				terminal.text += "Hello! ^_^ I'm so happy!\n"
-			"quit":
-				_execute_quit(parsed_function)
-			_:
-				emit_signal("function_executed", parsed_function)
+	if err_msg == Function.Error.FUNCTION_VALID:
+		var fun_to_execute : = function_lib.get_function(parsed_function)
+		fun_to_execute.execute(parsed_function)
 	
 	terminal.text += prompt
 	function = ""
@@ -92,23 +82,21 @@ func _execute_function() -> void:
 	_set_cursor_to_next_prompt()
 
 
-func _execute_help(parsed_function : PoolStringArray) -> void:
+func help() -> void:
 	terminal.text += "Currently connected functions:\n"
 	var temp_text : String = ""
 	for function_name in function_lib.get_function_names():
-		terminal.text += function_lib.get_function_to_string(function_name) + newline
+		terminal.text += function_lib.functions[function_name].to_string() + newline
 	#temp_text = temp_text.trim_suffix(newline)
 	terminal.text += temp_text
 
 
-func _execute_quit(parsed_function : PoolStringArray) -> void:
+func quit(duration : float = 0.0) -> void:
 	terminal.text += "Bye! ^_^ Bye!\n"
 	_set_cursor_to_next_prompt()
 	terminal.readonly = true
-	if parsed_function.size() == 2:
-		var duration : float = float(parsed_function[1])
-		var timer : = get_tree().create_timer(duration)
-		yield(timer, "timeout")
+	var timer : = get_tree().create_timer(duration)
+	yield(timer, "timeout")
 	get_tree().quit(0)
 
 

@@ -14,7 +14,7 @@ class_name Program
 var _functions : Dictionary
 
 
-func _init(in_functions : Dictionary) -> void:
+func _init(in_functions : Dictionary = {}) -> void:
 	_functions = in_functions
 
 
