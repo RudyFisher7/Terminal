@@ -10,6 +10,7 @@ export var path_to_eyes : NodePath
 export var path_to_y_pivot : NodePath
 export var path_to_x_pivot : NodePath
 export var path_to_interact_sensor : NodePath
+export var path_to_terminal : NodePath
 
 
 const cam_sensitivity_divisor_touch : float = 256.0
@@ -26,6 +27,7 @@ onready var eyes : Position3D = get_node(path_to_eyes)
 onready var y_pivot : Position3D = get_node(path_to_y_pivot)
 onready var x_pivot : Position3D = get_node(path_to_x_pivot)
 onready var interact_sensor : Area = get_node(path_to_interact_sensor)
+onready var terminal : Terminal = get_node(path_to_terminal)
 
 
 func _ready() -> void:
@@ -59,6 +61,21 @@ func _unhandled_input(event) -> void:
 		x_pivot.rotate_x(event.relative.y / cam_sensitivity_divisor_touch)
 		rotate_y(event.relative.x / cam_sensitivity_divisor_touch)
 		get_tree().set_input_as_handled()
+	
+	if event is InputEventJoypadButton:
+		if event.is_action_pressed("interact"):
+			_toggle_terminal_connection_with_programmable()
+			get_tree().set_input_as_handled()
+
+
+# Toggles this player's terminal's connection with a programmable that the player
+# has been near, if one exists.
+func _toggle_terminal_connection_with_programmable() -> void:
+	if !terminal.is_connected_to_programmable():
+		if _programmable != null:
+			terminal.connect_programmable(_programmable)
+	else:
+		terminal.disconnect_programmable()
 
 
 func _on_InteractSensor_body_entered(body : Node) -> void:

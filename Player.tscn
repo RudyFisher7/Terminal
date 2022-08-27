@@ -15,6 +15,7 @@ path_to_eyes = NodePath("Eyes")
 path_to_y_pivot = NodePath("Eyes/YPivot")
 path_to_x_pivot = NodePath("Eyes/YPivot/XPivot")
 path_to_interact_sensor = NodePath("InteractSensor")
+path_to_terminal = NodePath("Terminal")
 
 [node name="CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.546467, 0 )

@@ -9,6 +9,9 @@ extends CanvasLayer
 #####################################################################
 
 
+class_name Terminal
+
+
 export var path_to_terminal : NodePath
 
 const prompt : String = ">>"
@@ -18,9 +21,11 @@ const newline : String = "\n"
 var function_builder : Dictionary = {
 	"quit":[self, [0, 1], [Function.ArgType.FLOAT]],
 	"help":[self, [0], [Function.ArgType.NONE]],
+	"hi":[self, [0, 1], [Function.ArgType.STRING]],
 }
 
 var _current_program : Program
+var _connected_programmable : ProgrammableNode
 
 
 var function_lib : = FunctionLibrary.new()
@@ -37,9 +42,13 @@ onready var terminal : TextEdit = get_node(path_to_terminal)
 func _ready() -> void:
 	var funs : = function_lib.populate_functions(self, function_builder)
 	function_lib.functions.merge(funs)
+	function_lib.function_target_nodes[self.name] = self
+	
 	function_lib.functions.merge(GlobalLibrary.function_library.functions)
-	var _err = terminal.get_menu().connect("visibility_changed", self,\
-											 "_force_popup_to_hide")
+	function_lib.function_target_nodes.merge(GlobalLibrary.function_library.function_target_nodes)
+	
+	var _err = terminal.get_menu().connect("visibility_changed", self, "_force_popup_to_hide")
+	
 	_add_functions_to_keywords()
 	terminal.text += prompt
 	terminal.cursor_set_block_mode(true)
@@ -53,6 +62,8 @@ func _ready() -> void:
 func _add_functions_to_keywords() -> void:
 	for function in function_lib.get_function_names():
 		terminal.add_keyword_color(function, Color.royalblue)
+	for target_name in function_lib.get_target_node_names():
+		terminal.add_keyword_color(target_name, Color.tomato)
 
 
 # Parses the function that was just imputed by the user.
@@ -70,10 +81,20 @@ func _parse_function_and_args() -> void:
 # execution.
 func _execute_function() -> void:
 	_parse_function_and_args()
-	var err_msg : int = function_lib.validate(parsed_function)
+	var fun_lib : FunctionLibrary = function_lib
+	var err_msg : int = Function.Error.FUNCTION_INVALID
+	
+	if _connected_programmable != null:
+		fun_lib = _connected_programmable.function_lib
+		err_msg = fun_lib.validate(parsed_function)
+	
+	if err_msg != Function.Error.FUNCTION_VALID:
+		fun_lib = function_lib
+		err_msg = function_lib.validate(parsed_function)
+	
 	terminal.text += Function.Error.keys()[err_msg] + newline
 	if err_msg == Function.Error.FUNCTION_VALID:
-		var fun_to_execute : = function_lib.get_function(parsed_function)
+		var fun_to_execute : = fun_lib.get_function(parsed_function)
 		fun_to_execute.execute(parsed_function)
 	
 	terminal.text += prompt
@@ -82,13 +103,52 @@ func _execute_function() -> void:
 	_set_cursor_to_next_prompt()
 
 
+func connect_programmable(programmable : ProgrammableNode) -> void:
+	#function_lib.functions.merge(programmable.function_lib.functions)
+	#function_lib.function_target_nodes.merge(programmable.function_lib.function_target_nodes)
+	terminal.add_keyword_color(programmable.name, Color.forestgreen)
+	terminal.text += programmable.connect_to_terminal() + newline
+	terminal.text += prompt
+	_connected_programmable = programmable
+	_set_cursor_to_next_prompt()
+
+
+func disconnect_programmable() -> void:
+	#function_lib.unmerge_library(_connected_programmable.function_lib.functions)
+	#function_lib.unmerge_library_function_target_nodes(_connected_programmable.function_lib.function_target_nodes)
+	terminal.clear_colors()
+	_add_functions_to_keywords()
+	terminal.text += _connected_programmable.disconnect_from_terminal() + newline
+	terminal.text += prompt
+	_connected_programmable = null
+	_set_cursor_to_next_prompt()
+
+
+func is_connected_to_programmable() -> bool:
+	return _connected_programmable != null
+
+
 func help() -> void:
+	terminal.text += "Functions are in format:\n"
+	terminal.text += "<obj> <fun_name> <arg1> <arg2> ...\n"
 	terminal.text += "Currently connected functions:\n"
 	var temp_text : String = ""
-	for function_name in function_lib.get_function_names():
-		terminal.text += function_lib.functions[function_name].to_string() + newline
-	#temp_text = temp_text.trim_suffix(newline)
-	terminal.text += temp_text
+	_print_function_helps(function_lib)
+	
+	if _connected_programmable != null:
+		_print_function_helps(_connected_programmable.function_lib)
+
+
+func _print_function_helps(fun_lib : FunctionLibrary) -> void:
+	var help_text : String = ""
+	for function_name in fun_lib.get_function_names():
+		terminal.text += fun_lib.functions[function_name].to_string() + newline
+	terminal.text += help_text
+
+
+func hi(arg : String = "cutie-pie") -> void:
+	terminal.text += "hi, " + arg + "! ^_^" + newline
+	_set_cursor_to_next_prompt()
 
 
 func quit(duration : float = 0.0) -> void:
@@ -103,6 +163,7 @@ func quit(duration : float = 0.0) -> void:
 func _set_cursor_to_next_prompt() -> void:
 	var line_count : int = terminal.get_line_count()
 	terminal.cursor_set_line(line_count - 1)
+	cursor_prev_line = terminal.cursor_get_line()
 	terminal.cursor_set_column(prompt.length())
 
 

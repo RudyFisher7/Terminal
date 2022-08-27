@@ -38,6 +38,11 @@ _global_script_classes=[ {
 "class": "ProgrammableNode",
 "language": "GDScript",
 "path": "res://scenes/ProgrammableNode.gd"
+}, {
+"base": "CanvasLayer",
+"class": "Terminal",
+"language": "GDScript",
+"path": "res://Terminal.gd"
 } ]
 _global_script_class_icons={
 "DateTime": "",
@@ -45,7 +50,8 @@ _global_script_class_icons={
 "FunctionLibrary": "",
 "GlobalFunctionLibrary": "",
 "Program": "",
-"ProgrammableNode": ""
+"ProgrammableNode": "",
+"Terminal": ""
 }
 
 [application]
@@ -118,6 +124,11 @@ look_right={
 jump={
 "deadzone": 0.5,
 "events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":0,"pressure":0.0,"pressed":false,"script":null)
+ ]
+}
+interact={
+"deadzone": 0.5,
+"events": [ Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":0,"button_index":2,"pressure":0.0,"pressed":false,"script":null)
  ]
 }
 

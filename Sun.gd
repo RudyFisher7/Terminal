@@ -33,6 +33,7 @@ onready var pivot_previous_rotation_deg : = pivot.rotation_degrees
 func _ready():
 	functions = GlobalLibrary.function_library.populate_functions(self, function_builder)
 	GlobalLibrary.function_library.functions.merge(functions)
+	GlobalLibrary.function_library.function_target_nodes[self.name] = self
 
 
 func _process(delta) -> void:

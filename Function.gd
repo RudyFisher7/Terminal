@@ -29,6 +29,7 @@ enum Error {
 	FAILED_TO_EXECUTE,
 	FUNCTION_INVALID,
 	INVALID_TARGET,
+	NO_FUNCTION_SPECIFIED_FOR_ENTERED_TARGET,
 }
 
 
@@ -114,12 +115,12 @@ func execute(pool_func : PoolStringArray) -> int:
 
 
 func to_string() -> String:
-	return "func: " + target_node.name + " " + name + " -args --types." + get_arg_type_string() + " --nums." + String(num_args)
+	return "func: " + target_node.name + " " + name + " -args --types[" + get_arg_type_string() + "] --nums" + String(num_args)
 
 
 func get_arg_type_string() -> String:
 	var types : String = ""
 	for arg_type in arg_types:
-		types += ArgType.keys()[arg_type] + ","
-	return types
+		types += ArgType.keys()[arg_type] + ", "
+	return types.substr(0, types.length() - 2)
 
